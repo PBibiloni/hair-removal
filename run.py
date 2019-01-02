@@ -2,9 +2,10 @@ import datetime
 import logging
 import sys
 
+import numpy as np
 from skimage import io
 
-from core import remove_and_inpaint
+from core import remove_and_inpaint, bank_of_structuring_elements
 from utils import plot
 
 
@@ -15,9 +16,12 @@ if __name__ == '__main__':
 
     folder_plots = f'results/{datetime.datetime.now():%Y-%m-%d %H-%M-%S}/'
 
+    tophats_se = bank_of_structuring_elements(side_enclosing_square_in_px=9, num_orientations=8)
+    inpainting_se = np.ones((5, 5), dtype='float32')
+
     for name in ['Hairs1', 'Hairs2', 'Hairs3']:
         image = io.imread(f'images/{name}.jpg')
-        image_hairless, steps = remove_and_inpaint(image)
+        image_hairless, steps = remove_and_inpaint(image, tophats_se=tophats_se, inpainting_se=inpainting_se)
         plot([image, image_hairless],
              folder=folder_plots + f'{name}/',
              name='01 Summary',

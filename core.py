@@ -13,8 +13,7 @@ def remove_and_inpaint(image, tophats_se=None, inpainting_se=None):
 
     if tophats_se is None:
         logger.info('Creating structuring elements for top hat.')
-        tophats_se = [se_bar(side_enclosing_square_in_px=9, orientation_in_degrees=a)
-                      for a in np.linspace(start=0, stop=180, num=8, endpoint=False)]
+        tophats_se = bank_of_structuring_elements(side_enclosing_square_in_px=9, num_orientations=8)
     if inpainting_se is None:
         logger.info('Creating structuring element for inpainting.')
         inpainting_se = np.ones((5, 5), dtype='float32')
@@ -51,6 +50,11 @@ def remove_and_inpaint(image, tophats_se=None, inpainting_se=None):
             [s for s in inpaint_steps]
 
     return inpainted_image, steps
+
+
+def bank_of_structuring_elements(side_enclosing_square_in_px, num_orientations):
+    return [se_bar(side_enclosing_square_in_px=side_enclosing_square_in_px, orientation_in_degrees=a)
+            for a in np.linspace(start=0, stop=180, num=num_orientations, endpoint=False)]
 
 
 def se_bar(side_enclosing_square_in_px, orientation_in_degrees):

@@ -23,20 +23,27 @@ def remove_and_inpaint(image, tophats_se=None, inpainting_se=None):
 
     tophats_as_list = []
     for idx, se in enumerate(tophats_se):
-        logger.info(f'Computing top-hat {idx:02d}/{len(tophats_se):02d}.')
+        logger.info(f'Computing top-hat {idx+1:02d}/{len(tophats_se):02d}.')
         tophats_as_list.append(morphology.tophat_closing(image, structuring_element=se))
 
-    tophats = np.stack(tophats_as_list, axis=2)     # Since THs are monochannel (2D), so are to be stacked on 3rd.
+    tophats = np.stack(tophats_as_list, axis=2)     # THs are 2D, so are to be stacked on 3rd dim.
 
     logger.info('Computing curvilinear detector output.')
     curvilinear_detector = np.max(tophats, axis=2) - np.min(tophats, axis=2)
+    curvilinear_detector -= np.min(curvilinear_detector)
+    if np.max(curvilinear_detector) > 0:
+        curvilinear_detector /= np.max(curvilinear_detector)
+
     curvilinear_mask = curvilinear_detector > 0.1
+
+    image_to_inpaint = image.copy()
+    image_to_inpaint[curvilinear_mask] = np.nan
 
     logger.info('Inpainting image.')
     inpainted_image, inpaint_steps = morphology.inpaint_with_steps(image, structuring_element=inpainting_se)
 
     steps = [v for tupl in zip(tophats_se, tophats_as_list) for v in tupl] + \
-            [curvilinear_detector, curvilinear_mask] + \
+            [curvilinear_detector, curvilinear_mask, image_to_inpaint] + \
             [s for s in inpaint_steps]
 
     return inpainted_image, steps

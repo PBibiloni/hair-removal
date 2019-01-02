@@ -19,20 +19,25 @@ You may download from the repository, or just install through pip:
 pip install git+https://github.com/pbibiloni/hair-removal.git
 ```
 
-To use:
+Then, simply use it as a normal import (it can take a while):
 ```
+import logging
 from hair_removal import remove_and_inpaint
 
-remove_and_inpaint(dermoscopic_image_as_rgb)
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)  # Show logs
+hairless_image, steps = remove_and_inpaint(dermoscopic_image_as_rgb)
 ```
 
-It can be customized:
+It can also be customized to, for instance, be used with images of different size:
 ```
+import logging
+import numpy as np
 from hair_removal import bank_of_structuring_elements, remove_and_inpaint
 
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)  # Show logs
 tophats_se = bank_of_structuring_elements(side_enclosing_square_in_px=9, num_orientations=3)
 inpainting_se = np.ones((3, 3), dtype='float32')
-remove_and_inpaint(dermoscopic_image_as_rgb, tophats_se=tophats_se, inpainting_se=inpainting_se)
+hairless_image, steps = remove_and_inpaint(dermoscopic_image_as_rgb, tophats_se=tophats_se, inpainting_se=inpainting_se)
 ```
 
 

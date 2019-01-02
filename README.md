@@ -9,7 +9,7 @@ Skin hair removal in dermoscopic images using soft color morphology.
 Conference on Artificial Intelligence in Medicine in Europe (pp. 322-326). Springer, Cham.
 ```
 
-![Opening and closing of a dermatoscopic image using soft color morphology](README_example.png)
+![Dermoscopic image and the output of the algorithm](README_example.png)
 
 
 ## Getting Started
@@ -17,52 +17,31 @@ Conference on Artificial Intelligence in Medicine in Europe (pp. 322-326). Sprin
 Soft color morphology provide two operators, erosion and dilation, that can be combined to form other complex 
 mathematical morphology operators. It admits non-binary structuring elements.
 
-Duplicate the :
+You may download the code and play with it, or just install through pip:
 ```bash
-pip install softcolor
+pip install git+https://github.com/pbibiloni/hair-removal.git
 ```
 
-To use in natural images, we recommend using the CIELab color space:
-```python
-import numpy as np
-from skimage import data
-from softcolor.morphology import MorphologyInCIELab
+To use:
+```
+from hair_removal import remove_and_inpaint
 
-morphology = MorphologyInCIELab()
-structuring_element = np.ones(shape=(5, 1), dtype='float32')
-
-image = data.astronaut()
-image_eroded = morphology.erosion(image, structuring_element)
-image_dilated = morphology.dilation(image, structuring_element)
+remove_and_inpaint(dermoscopic_image_as_rgb)
 ```
 
-The soft color morphology operators depend on a fuzzy conjunction and a fuzzy implication function.
-They can be provided as:
-```python
-from skimage import data
-from skimage.morphology import disk
-from softcolor.morphology import MorphologyInCIELab, soften_structuring_element
-from softcolor.aggregation_functions import conjunction_min, implication_godel
-
-morphology = MorphologyInCIELab(
-    conjunction=conjunction_min,
-    fuzzy_implication_function=implication_godel)
-structuring_element = soften_structuring_element(disk(5))
-
-image = data.astronaut()
-image_eroded = morphology.opening(image, structuring_element)
-image_dilated = morphology.closing(image, structuring_element)
+It can be customized:
 ```
+from hair_removal import bank_of_structuring_elements, remove_and_inpaint
 
-Some operations (e.g. top-hat, inpainting) also depend on a measure of dissimilarity between images (such as the 
-pixel-wise Euclidean distance) and a method to combine images (such as the standard average).
-
-To apply the soft color operators with generic color spaces, use the class `softcolor.morphology.BaseMorphology`.
+tophats_se = bank_of_structuring_elements(side_enclosing_square_in_px=9, num_orientations=3)
+inpainting_se = np.ones((3, 3), dtype='float32')
+remove_and_inpaint(dermoscopic_image_as_rgb, tophats_se=tophats_se, inpainting_se=inpainting_se)
+```
 
 
 ### More examples
 
-Browse the [examples folder](examples) to check out other morphological operations.
+Browse the [examples folder](examples) to check out a more complete example.
 
 
 ## License

@@ -5,9 +5,8 @@ import sys
 import numpy as np
 from skimage import io
 
-from core import remove_and_inpaint, bank_of_structuring_elements
 from examples.utils import plot
-
+from hair_removal import bank_of_structuring_elements, remove_and_inpaint
 
 if __name__ == '__main__':
     # Display all logs on console

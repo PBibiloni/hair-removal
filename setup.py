@@ -1,21 +1,21 @@
 from distutils.core import setup
 
 setup(
-    name='softcolor',  # How you named your package folder
-    packages=['softcolor'],  # Chose the same as "name"
-    version='0.1.1',  # Start with a small number and increase it with every change you make
+    name='pbibiloni-hair_removal',  # How you named your package folder
+    packages=['pbibiloni-hair_removal'],  # Chose the same as "name"
+    version='0.1',  # Start with a small number and increase it with every change you make
     license='MIT',  # Chose a license from here: https://help.github.com/articles/licensing-a-repository
-    description='Soft Color Morphology for Image Processing',  # Give a short description about your library
+    description='Hair Removal for Dermoscopic Images',  # Give a short description about your library
     author='Pedro Bibiloni',  # Type in your name
     author_email='pedro@bibiloni.es',  # Type in your E-Mail
-    url='https://github.com/pbibiloni/softcolor',  # Provide either the link to your github or to your website
-    download_url='https://github.com/pbibiloni/softcolor/archive/v_01.tar.gz',  # Source code
-    keywords=['Soft Color Morphology', 'Mathematical Morphology', 'Aggregation Functions', 'Image Processing'],
+    url='https://github.com/pbibiloni/hair_removal',  # Provide either the link to your github or to your website
+    keywords=['Soft Color Morphology', 'Image Processing', 'Dermoscopic Images', 'Hair Removal'],
     # Keywords that define your package best
     install_requires=[  # All imports
         'numpy',
         'scipy',
         'scikit-image',
+        'softcolor'
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

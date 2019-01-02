@@ -17,7 +17,7 @@ def remove_and_inpaint(image, tophats_se=None, inpainting_se=None):
                       for a in np.linspace(start=0, stop=180, num=8, endpoint=False)]
     if inpainting_se is None:
         logger.info('Creating structuring element for inpainting.')
-        inpainting_se = np.ones(5)
+        inpainting_se = np.ones((5, 5), dtype='float32')
 
     morphology = MorphologyInCIELab()
 
@@ -40,10 +40,14 @@ def remove_and_inpaint(image, tophats_se=None, inpainting_se=None):
     image_to_inpaint[curvilinear_mask] = np.nan
 
     logger.info('Inpainting image.')
-    inpainted_image, inpaint_steps = morphology.inpaint_with_steps(image, structuring_element=inpainting_se)
+    inpainted_image, inpaint_steps = morphology.inpaint_with_steps(image_to_inpaint, structuring_element=inpainting_se)
 
-    steps = [v for tupl in zip(tophats_se, tophats_as_list) for v in tupl] + \
-            [curvilinear_detector, curvilinear_mask, image_to_inpaint] + \
+    tophats_as_list_normalized = [t - np.min(t) for t in tophats_as_list]
+    tophats_as_list_normalized = [t/np.max(t) for t in tophats_as_list_normalized]
+    image_to_inpaint[np.isnan(image_to_inpaint)] = 1    # Inpaint with white for visualization
+
+    steps = [v for tupl in zip(tophats_se, tophats_as_list_normalized) for v in tupl] + \
+            [curvilinear_detector, curvilinear_mask] + \
             [s for s in inpaint_steps]
 
     return inpainted_image, steps

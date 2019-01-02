@@ -13,15 +13,16 @@ if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-    folder_plots = f'results/{datetime.datetime.now():%Y-%m-%d %H-%M-%S}'
+    folder_plots = f'results/{datetime.datetime.now():%Y-%m-%d %H-%M-%S}/'
 
-    image = io.imread('images/Hairs1.jpg')
-    image_hairless, steps = remove_and_inpaint(image)
-    plot([image, image_hairless],
-         folder=folder_plots,
-         name='00 Summary',
-         save=True, save_each_independently=True)
-    plot(steps,
-         folder=folder_plots,
-         name='01 Steps',
-         save=True, save_each_independently=True)
+    for name in ['Hairs1', 'Hairs2', 'Hairs3']:
+        image = io.imread(f'images/{name}.jpg')
+        image_hairless, steps = remove_and_inpaint(image)
+        plot([image, image_hairless],
+             folder=folder_plots + f'{name}/',
+             name='01 Summary',
+             save=True, save_each_independently=True)
+        plot(steps,
+             folder=folder_plots + f'{name}/',
+             name='02 Steps',
+             save=True, save_each_independently=True)

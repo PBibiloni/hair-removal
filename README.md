@@ -14,10 +14,7 @@ Conference on Artificial Intelligence in Medicine in Europe (pp. 322-326). Sprin
 
 ## Getting Started
 
-Soft color morphology provide two operators, erosion and dilation, that can be combined to form other complex 
-mathematical morphology operators. It admits non-binary structuring elements.
-
-You may download the code and play with it, or just install through pip:
+You may download from the repository, or just install through pip:
 ```bash
 pip install git+https://github.com/pbibiloni/hair-removal.git
 ```

@@ -2,7 +2,6 @@ import datetime
 import logging
 import math
 import os
-from warnings import warn
 
 import numpy as np
 from matplotlib import pyplot as plt

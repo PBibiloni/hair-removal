@@ -6,7 +6,7 @@ import numpy as np
 from skimage import io
 
 from core import remove_and_inpaint, bank_of_structuring_elements
-from utils import plot
+from examples.utils import plot
 
 
 if __name__ == '__main__':

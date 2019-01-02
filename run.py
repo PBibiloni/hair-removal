@@ -1,66 +1,22 @@
 import datetime
-import os
+import logging
+import sys
 
-import numpy as np
-import math
-
-import matplotlib.pyplot as plt
-from skimage import io, img_as_float
+from skimage import io
 
 from core import remove_and_inpaint
-
-
-def plot(list_images, show=True, save=False, save_each_independently=False, folder=None, name=None, extension='.png'):
-    if isinstance(list_images, np.ndarray):
-        list_images = [list_images]
-
-    if len(list_images) > 9:
-        for i in range(math.ceil(len(list_images)/9)):
-            plot(list_images[9*i:9*(i+1)], show=show, save=save, save_each_independently=save_each_independently,
-                 folder=folder, name=f'{name} {i:02d}', extension=extension)
-    else:
-        size_by_num_plots = {
-            1: (1, 1),
-            2: (1, 2),
-            3: (1, 2),
-            4: (2, 2),
-            6: (2, 3),
-            1e10: (3, math.ceil(len(list_images)/3)),
-        }
-        sz = {key: value for key, value in size_by_num_plots.items() if key > len(list_images)}
-        sz = min(sz.items(), key=lambda t: t[1])[1]
-
-        fig, axs = plt.subplots(nrows=sz[0], ncols=sz[1])
-        [ax.axis('off') for ax in axs.flat]
-        for idx, img in enumerate(list_images):
-            if img.dtype == 'bool':
-                img = img_as_float(img)
-            ax = axs.flat[idx]
-            im = ax.imshow(img)
-            if img.ndim == 2:
-                fig.colorbar(im, ax=ax, cmap='gray')
-        fig.tight_layout()
-
-        if show:
-            fig.show()
-        if save:
-            if folder is None:
-                folder = f'results/{datetime.datetime.now():%Y-%m-%d %H-%M-%S}'
-            os.makedirs(folder, exist_ok=True)
-            fig.savefig(fname=folder + '/' + name + extension)
-            if save_each_independently:
-                for idx, single_image in enumerate(list_images):
-                    os.makedirs(f'{folder}/{name}', exist_ok=True)
-                    io.imsave(arr = single_image, fname=f'{folder}/{name}/{name} - {idx:02d}{extension}')
-        plt.close(fig=fig)
+from utils import plot
 
 
 if __name__ == '__main__':
-    image = io.imread('images/Hairs1.jpg')
-    image_hairless, steps = remove_and_inpaint(image)
+    # Display all logs on console
+    logging.basicConfig(stream=sys.stdout, level=logging.INFO,
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     folder_plots = f'results/{datetime.datetime.now():%Y-%m-%d %H-%M-%S}'
 
+    image = io.imread('images/Hairs1.jpg')
+    image_hairless, steps = remove_and_inpaint(image)
     plot([image, image_hairless],
          folder=folder_plots,
          name='00 Summary',

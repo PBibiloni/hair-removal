@@ -2,14 +2,14 @@ import logging
 import math
 
 import numpy as np
-from skimage import img_as_float
+import skimage
 from softcolor import MorphologyInCIELab
 
 logger = logging.getLogger(__name__)
 
 
 def remove_and_inpaint(image, tophats_se=None, inpainting_se=None):
-    image = img_as_float(image)
+    image = skimage.img_as_float(image)
 
     if tophats_se is None:
         logger.info('Creating structuring elements for top hat.')
@@ -34,19 +34,18 @@ def remove_and_inpaint(image, tophats_se=None, inpainting_se=None):
         curvilinear_detector /= np.max(curvilinear_detector)
 
     curvilinear_mask = curvilinear_detector > 0.1
+    curvilinear_mask_enlarged = skimage.morphology.dilation(curvilinear_mask, skimage.morphology.square(3))
 
     image_to_inpaint = image.copy()
-    image_to_inpaint[curvilinear_mask] = np.nan
+    image_to_inpaint[curvilinear_mask_enlarged] = np.nan
 
     logger.info('Inpainting image.')
     inpainted_image, inpaint_steps = morphology.inpaint_with_steps(image_to_inpaint, structuring_element=inpainting_se)
 
     tophats_as_list_normalized = [t - np.min(t) for t in tophats_as_list]
     tophats_as_list_normalized = [t/np.max(t) for t in tophats_as_list_normalized]
-    image_to_inpaint[np.isnan(image_to_inpaint)] = 1    # Inpaint with white for visualization
-
     steps = [v for tupl in zip(tophats_se, tophats_as_list_normalized) for v in tupl] + \
-            [curvilinear_detector, curvilinear_mask] + \
+            [curvilinear_detector, curvilinear_mask, image_to_inpaint] + \
             [s for s in inpaint_steps]
 
     return inpainted_image, steps

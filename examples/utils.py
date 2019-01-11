@@ -33,9 +33,14 @@ def plot(list_images, show=True, save=False, save_each_independently=False, fold
         fig, axs = plt.subplots(nrows=sz[0], ncols=sz[1])
         [ax.axis('off') for ax in axs.flat]
         for idx, img in enumerate(list_images):
+            # Show bool images
             if img.dtype == 'bool':
                 img = img_as_uint(img)
-            img[np.isnan(img)] = 0
+            # Visualize missing values as 1's (RGB's white)
+            mask_nans = np.nan(img)
+            if np.any(mask_nans):
+                img = img.copy()
+                img[mask_nans] = 1
             ax = axs.flat[idx]
             im = ax.imshow(img)
             if img.ndim == 2:

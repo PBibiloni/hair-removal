@@ -35,6 +35,7 @@ def plot(list_images, show=True, save=False, save_each_independently=False, fold
         for idx, img in enumerate(list_images):
             if img.dtype == 'bool':
                 img = img_as_uint(img)
+            img[np.isnan(img)] = 0
             ax = axs.flat[idx]
             im = ax.imshow(img)
             if img.ndim == 2:

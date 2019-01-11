@@ -50,3 +50,5 @@ Browse the [examples folder](examples) to check out a more complete example.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+Copyright (c) 2019 Pedro Bibiloni [http://pedro.bibiloni.es] [pedro@bibiloni.es], SCOPIA Research group [http://scopia.uib.es], Universitat de les Illes Balears [http://uib.es].
+

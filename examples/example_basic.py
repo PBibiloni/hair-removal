@@ -15,8 +15,8 @@ if __name__ == '__main__':
 
     folder_plots = f'results/{datetime.datetime.now():%Y-%m-%d %H-%M-%S}/'
 
-    tophats_se = bank_of_structuring_elements(side_enclosing_square_in_px=9, num_orientations=8)
-    inpainting_se = np.ones((5, 5), dtype='float32')
+    tophats_se = bank_of_structuring_elements(side_enclosing_square_in_px=9, num_orientations=4)
+    inpainting_se = np.ones((3, 3), dtype='float32')
 
     for name in ['Hairs1', 'Hairs2', 'Hairs3']:
         image = io.imread(f'images/{name}.jpg')

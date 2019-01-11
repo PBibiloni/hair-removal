@@ -14,16 +14,16 @@ def plot(list_images, show=True, save=False, save_each_independently=False, fold
     if isinstance(list_images, np.ndarray):
         list_images = [list_images]
 
-    for img in list_images:
+    for idx, img in enumerate(list_images):
         # Show bool images
         if img.dtype == 'bool':
-            img = img_as_uint(img)
+            list_images[idx] = img_as_uint(img)
         # Visualize missing values as 1's (RGB's white)
         mask_nans = np.isnan(img)
         if np.any(mask_nans):
             img = img.copy()
             img[mask_nans] = 1
-
+            list_images[idx] = img
 
     if len(list_images) > 9:
         for i in range(math.ceil(len(list_images)/9)):
